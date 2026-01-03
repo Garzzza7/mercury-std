@@ -12,6 +12,8 @@
 :- pred kth(list(int)::in , int::in , int::out) is det.
 :- pred last(list(int)::in , int::out) is det.
 :- pred merge(list(int)::in , list(int)::in , list(int)::out) is det.
+:- pred pop_back(list(int)::in , list(int)::out) is det.
+:- pred pop_front(list(int)::in , list(int)::out) is det.
 :- pred push_back(list(int)::in , int::in , list(int)::out) is det.
 :- pred push_front(list(int)::in , int::in , list(int)::out) is det.
 :- pred reverse(list(int)::in, list(int)::out) is det.
@@ -26,6 +28,20 @@
 :- pred reverse_sub(list(int)::in, list(int)::in ,list(int)::out) is det.
 :- pred size_sub(list(int)::in , int::in , int::out) is det.
 :- pred sum_sub(list(int)::in , int::in , int::out) is det.
+
+pop_back(In , Out) :-(
+	In = [], Out = []
+	; In = [H | T],
+	(
+		if T = [] then Out = []
+		else Out = [H | TH], pop_back(T , TH)
+	)
+    ).
+
+pop_front(In , Out) :-(
+	In = [], Out = []
+	; In = [_ | T], Out = T
+    ).
 
 find(Arr , Elem , Res) :-(
 	Arr = [], Res = no
@@ -113,21 +129,21 @@ last(Arr , Last) :-(
     ).
 
 push_back(In , Elem , Out) :-(
-	In = [] , Out = [Elem]
+	In = [], Out = [Elem]
 	; In = [Head | Tail],
-          Out = [Head | CopiedTail],
-          push_back(Tail , Elem , CopiedTail)
+          Out = [Head | T],
+          push_back(Tail , Elem , T)
     ).
 
 copy(Src, Dst) :-(
-	Src = [] , Dst = []
+	Src = [], Dst = []
 	; Src = [Head | Tail],
-	  Dst = [Head | CopiedTail],
-          arr.copy(Tail , CopiedTail)
+	  Dst = [Head | T],
+          arr.copy(Tail , T)
     ).
 
 size_sub(Arr , Cnt , Res) :-(
-	Arr = [] , Res = Cnt
+	Arr = [], Res = Cnt
 	; Arr = [_ | Xs] , size_sub(Xs , Cnt + 1 , Res)
     ).
 

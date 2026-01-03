@@ -16,7 +16,7 @@
 :- pred print_kth_sub(list(int)::in , int::in , int::in , io::di, io::uo) is det.
 
 print_head(Arr , !IO) :-(
-	Arr = [] , io.write_string("Empty array gg.\n" , !IO)
+	Arr = [], io.write_string("Empty array gg.\n" , !IO)
 	; Arr = [X | _] , io.write_int(X , !IO) , io.write_char('\n' , !IO)
     ).
 

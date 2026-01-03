@@ -24,9 +24,13 @@
 :- implementation.
 
 main(!IO)  :-(
-	B : list(int) = [69 , 1 , 2 , 3 , 4 , 123 , 12 , 12  ,  523 , 2345],
+	B : list(int) = [69 , 1 , 2 , 3 , 4 , 123 , 12 , 12 , 523 , 2345],
 	A : list(int) = [1 , 1 , 4 , 5],
 	C : list(int) = [2],
+	arr.pop_front(B , Popfront),
+	printer.print_arr(Popfront , !IO),
+	arr.pop_back(B , Popback),
+	printer.print_arr(Popback , !IO),
 	arr.merge(B , A , Com),
 	arr.find(Com , 12 , F),
 	helper.parse_bool(F , "FOUND!\n" , "NOT FOUND!\n" , !IO),
