@@ -17,7 +17,7 @@
 
 print_head(Arr , !IO) :-(
 	Arr = [], io.write_string("Empty array gg.\n" , !IO)
-	; Arr = [X | _] , io.write_int(X , !IO) , io.write_char('\n' , !IO)
+	; Arr = [X | _], io.write_int(X , !IO) , io.write_char('\n' , !IO)
     ).
 
 print_arr(Arr , !IO) :-(
@@ -48,7 +48,7 @@ print_kth_sub(Arr , Id , Cnt , !IO) :-(
 		if Id = Cnt then io.write_int(X, !IO), io.write_char('\n', !IO)
 		else print_kth_sub(Xs , Id , Cnt + 1 , !IO)
 	)
-	; Arr = [] , io.write_string("Index out of scope.\n" , !IO)
+	; Arr = [], io.write_string("Index out of scope.\n" , !IO)
     ).
 
 :- end_module printer.
