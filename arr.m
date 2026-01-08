@@ -21,20 +21,65 @@
 :- pred pop_front(list(int)::in, list(int)::out) is det.
 :- pred push_back(list(int)::in, int::in, list(int)::out) is det.
 :- pred push_front(list(int)::in, int::in, list(int)::out) is det.
+:- pred remove_kth(list(int)::in, int::in, list(int)::out) is det.
 :- pred reverse(list(int)::in, list(int)::out) is det.
 :- pred size(list(int)::in, int::out) is det.
 :- pred split(list(int)::in, int::in, list(int)::out, list(int)::out) is det.
 :- pred sum(list(int)::in, int::out) is det.
 :- pred tail(list(int)::in, list(int)::out) is det.
 
+:- pred insert_kth(list(int)::in, int::in, int::in, list(int)::out) is det.
+
 :- implementation.
 
 % helpers
 :- pred kth_sub(list(int)::in, int::in, int::in, int::out) is det.
+:- pred remove_kth_sub(list(int)::in, int::in, int::in, list(int)::out) is det.
 :- pred reverse_sub(list(int)::in, list(int)::in ,list(int)::out) is det.
 :- pred size_sub(list(int)::in, int::in, int::out) is det.
 :- pred split_sub(list(int)::in, int::in, int::in, list(int)::out, list(int)::out) is det.
 :- pred sum_sub(list(int)::in, int::in, int::out) is det.
+
+:- pred insert_kth_sub(list(int)::in, int::in, int::in, int::in, list(int)::out) is det.
+
+insert_kth(Arr, Elem, At, Out) :-(
+        Arr = [] -> Out = []
+        ; insert_kth_sub(Arr, Elem, At, 0, Out)
+        ).
+
+insert_kth_sub(Arr, Elem, At, Cnt, Out) :-(
+        % FIXME: only works for the first elemement
+        At = Cnt ->
+        (
+            Arr = [H | T],
+            Out = [Elem | OT],
+            remove_kth_sub(Arr, At, Cnt + 1, OT)
+            ; Arr = [],
+              Out = [Elem | OT],
+              remove_kth_sub([], At, Cnt + 1, OT)
+        )
+        ; Arr = [], Out = []
+        ; Arr = [H | T],
+          Out = [H | OT],
+          remove_kth_sub(T, At, Cnt + 1, OT)
+    ).
+
+remove_kth(Arr, At, Out) :-(
+        Arr = [] -> Out = []
+        ; remove_kth_sub(Arr, At, 0, Out)
+    ).
+
+remove_kth_sub(Arr, At, Cnt, Out) :-(
+        At = Cnt ->
+        (
+            Arr = [_ | T], remove_kth_sub(T, At, Cnt + 1, Out)
+            ; Arr = [], remove_kth_sub([], At, Cnt + 1, Out)
+        )
+        ; Arr = [], Out = []
+        ; Arr = [H | T],
+          Out = [H | OT],
+          remove_kth_sub(T, At, Cnt + 1, OT)
+    ).
 
 binary_search(Arr, Elem, Res) :-(
     Arr = [], Res = no
@@ -42,16 +87,16 @@ binary_search(Arr, Elem, Res) :-(
       (
         T = [],
         (
-            if Elem = H then Res = yes else Res = no
+            Elem = H -> Res = yes ; Res = no
         )
         ; T = [_ | _],
           arr.size(Arr, Size),
           arr.kth(Arr, Size / 2 - 1, Curr),
           arr.split(Arr, Size / 2 - 1, L, R),
           (
-              if Curr = Elem then Res = yes
-              else if Curr > Elem then binary_search(L, Elem, Res)
-              else binary_search(R, Elem, Res)
+              Curr = Elem -> Res = yes
+              ; Curr > Elem -> binary_search(L, Elem, Res)
+              ; binary_search(R, Elem, Res)
           )
       )
     ).
@@ -82,9 +127,9 @@ merge(Arr1, Arr2, Res) :-(
         Arr2 = [], arr.copy(Arr1, Res)
         ; Arr2 = [H2 | T2],
           (
-            if H2 = H1 then       Res = [H1 | [H2 | T]], arr.merge(T1, T2, T)
-            else if H2 < H1 then  Res = [H2 | T],        arr.merge(Arr1, T2, T)
-            else                  Res = [H1 | T],        arr.merge(T1, Arr2, T)
+              H2 = H1 -> Res = [H1 | [H2 | T]], arr.merge(T1, T2, T)
+            ; H2 < H1 -> Res = [H2 | T],        arr.merge(Arr1, T2, T)
+            ;            Res = [H1 | T],        arr.merge(T1, Arr2, T)
           )
     )
     ).
@@ -93,8 +138,7 @@ hadamard(Arr1, Arr2, Res) :-(
     Arr1 =[],
     (
         % TODO: debullshitfy?
-        if Arr2 = [] then Res = []
-        else Res = []
+        Arr2 = [] -> Res = [] ; Res = []
     )
     ; Arr1 = [H1 | T1],
     (
@@ -107,11 +151,10 @@ hadamard(Arr1, Arr2, Res) :-(
     ).
 
 add(Arr1, Arr2, Res) :-(
-    Arr1 =[],
+    Arr1 = [],
     (
         % TODO: debullshitfy?
-        if Arr2 = [] then Res = []
-        else Res = []
+        Arr2 = [] -> Res = [] ; Res = []
     )
     ; Arr1 = [H1 | T1],
     (
@@ -128,8 +171,8 @@ split_sub(Arr, At, Cnt, Out1, Out2) :-(
     ; Arr = [H | T],
       Out1 = [H | T1],
       (
-         if At = Cnt then T1 = [], arr.copy(T, Out2)
-         else split_sub(T, At, Cnt + 1, T1, Out2)
+         At = Cnt -> T1 = [], arr.copy(T, Out2)
+         ; split_sub(T, At, Cnt + 1, T1, Out2)
       )
     ).
 
@@ -144,8 +187,8 @@ pop_back(In, Out) :-(
     In = [], Out = []
     ; In = [H | T],
       (
-        if T = [] then Out = []
-        else Out = [H | TH], pop_back(T, TH)
+        T = [] -> Out = []
+        ; Out = [H | TH], pop_back(T, TH)
       )
     ).
 
@@ -158,8 +201,8 @@ find(Arr, Elem, Res) :-(
     Arr = [], Res = no
     ; Arr = [X | Xs],
       (
-        if X = Elem then Res = yes
-        else find(Xs, Elem, Res)
+        X = Elem -> Res = yes
+        ; find(Xs, Elem, Res)
       )
     ).
 
@@ -199,8 +242,8 @@ sum(Arr, Sum) :-(
 kth_sub(Arr, Id, Cnt, Res) :-(
     Arr = [X | Xs],
     (
-        if Id = Cnt then Res = X
-        else kth_sub(Xs, Id, Cnt + 1, Res)
+        Id = Cnt -> Res = X
+        ; kth_sub(Xs, Id, Cnt + 1, Res)
     )
     % TODO: should be a result
     ; Arr = [], Res = 0
@@ -234,8 +277,8 @@ last(Arr, Last) :-(
     Arr = [], Last = -2137
     ; Arr = [X | Xs],
      (
-        if Xs = [] then Last = X
-        else arr.last(Xs, Last)
+        Xs = [] -> Last = X
+        ; arr.last(Xs, Last)
      )
     ).
 

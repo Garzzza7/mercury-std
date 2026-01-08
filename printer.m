@@ -45,8 +45,8 @@ print_kth(Arr, Id, !IO) :-(
 print_kth_sub(Arr, Id, Cnt, !IO) :-(
     Arr = [X | Xs],
     (
-        if Id = Cnt then io.write_int(X, !IO), io.write_char('\n', !IO)
-        else print_kth_sub(Xs, Id, Cnt + 1, !IO)
+        Id = Cnt -> io.write_int(X, !IO), io.write_char('\n', !IO)
+        ; print_kth_sub(Xs, Id, Cnt + 1, !IO)
     )
     ;Arr = [], io.write_string("Index out of scope.\n", !IO)
     ).

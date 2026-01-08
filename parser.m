@@ -11,13 +11,13 @@
 :- implementation.
 
 parse_bool_to_io(Bool, S1, S2, !IO) :-(
-    if Bool = yes then io.write_string(S1, !IO)
-    else io.write_string(S2, !IO)
+    Bool = yes -> io.write_string(S1, !IO)
+    ; io.write_string(S2, !IO)
    ).
 
 parse_bool_to_string(Bool, S1, S2, Out) :-(
-    if Bool = yes then Out = S1
-    else Out = S2
+    Bool = yes -> Out = S1
+    ; Out = S2
    ).
 
 :- end_module parser.

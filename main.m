@@ -26,6 +26,8 @@
 main(!IO) :-(
     B : list(int) = [69, 1, 2, 3, 4, 123, 12, 12, 523, 2345],
     A : list(int) = [1, 1, 4, 5],
+    arr.insert_kth(B, 5, 1, Ins),
+    printer.print_arr(Ins, !IO),
     Atest : list(int) = [1, 1, 1, 1],
     C : list(int) = [2],
     arr.merge_sort([16, 13, 12, 10, 9, 8, 67, 7, 6, 5, 4, 3, 2, 1, 11], Sorted),
@@ -115,5 +117,6 @@ main(!IO) :-(
     io.write_int(Last, !IO),
     io.write_char('\n', !IO),
     arr.sum(A, Sum),
-    io.write_int(Sum, !IO)
+    io.write_int(Sum, !IO),
+    io.nl(!IO)
     ).
