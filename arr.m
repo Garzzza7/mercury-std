@@ -10,6 +10,7 @@
 :- pred binary_search(list(int)::in, int::in, bool::out) is det.
 :- pred combine(list(int)::in, list(int)::in, list(int)::out) is det.
 :- pred copy(list(int)::in, list(int)::out) is det.
+:- pred dot(list(int)::in, list(int)::in, int::out) is det.
 :- pred find(list(int)::in, int::in, bool::out) is det.
 :- pred hadamard(list(int)::in, list(int)::in, list(int)::out) is det.
 :- pred head(list(int)::in, int::out) is det.
@@ -32,6 +33,7 @@
 :- implementation.
 
 % helpers
+:- pred dot_sub(list(int)::in, list(int)::in, int::in, int::out) is det.
 :- pred insert_kth_sub(list(int)::in, int::in, int::in, int::in, list(int)::out) is det.
 :- pred kth_sub(list(int)::in, int::in, int::in, int::out) is det.
 :- pred remove_kth_sub(list(int)::in, int::in, int::in, list(int)::out) is det.
@@ -39,6 +41,26 @@
 :- pred size_sub(list(int)::in, int::in, int::out) is det.
 :- pred split_sub(list(int)::in, int::in, int::in, list(int)::out, list(int)::out) is det.
 :- pred sum_sub(list(int)::in, int::in, int::out) is det.
+
+dot_sub(Arr1, Arr2, Curr, Res) :-(
+    Arr1 =[],
+    (
+        Res = Curr
+    )
+    ; Arr1 = [H1 | T1],
+    (
+        Arr2 = [], Res = Curr
+        ; Arr2 = [H2 | T2],
+          dot_sub(T1, T2, Curr + (H1 * H2) ,Res)
+    )
+    ).
+
+dot(Arr1, Arr2, Res) :-(
+    arr.size(Arr1, S1),
+    arr.size(Arr2, S2),
+    S1 = S2 -> dot_sub(Arr1, Arr2, 0, Res)
+    ; Res = 0
+    ).
 
 insert_kth(Arr, Elem, At, Out) :-(
     insert_kth_sub(Arr, Elem, At, 0, Out)

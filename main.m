@@ -122,5 +122,7 @@ main(!IO) :-(
     io.nl(!IO),
     arr.insert_kth(B, 5, 2, Ins),
     printer.print_arr(Ins, !IO),
-    printer.print_arr(B, !IO)
+    printer.print_arr(B, !IO),
+    arr.dot([2, 2, 2, 2], [2, 2, 2, 2], Dot),
+    io.write_int(Dot, !IO)
     ).
