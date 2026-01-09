@@ -26,12 +26,11 @@
 main(!IO) :-(
     B : list(int) = [69, 1, 2, 3, 4, 123, 12, 12, 523, 2345],
     A : list(int) = [1, 1, 4, 5],
-    arr.insert_kth(B, 5, 1, Ins),
-    printer.print_arr(Ins, !IO),
     Atest : list(int) = [1, 1, 1, 1],
     C : list(int) = [2],
+    arr.remove_kth(B, 2 ,Rem),
+    printer.print_arr(Rem, !IO),
     arr.merge_sort([16, 13, 12, 10, 9, 8, 67, 7, 6, 5, 4, 3, 2, 1, 11], Sorted),
-    % arr.merge_sort([1 , 2], Sorted),
     printer.print_arr(Sorted, !IO),
     arr.binary_search(Sorted, 1, Found1),
     parser.parse_bool_to_io(Found1, "Got it!\n", "Nope\n", !IO),
@@ -71,6 +70,8 @@ main(!IO) :-(
     printer.print_arr(Addition, !IO),
     arr.hadamard([1, 1, 1, 1], [1, 1, 1, 1], Hadamard),
     printer.print_arr(Hadamard, !IO),
+    arr.add([1, 1, 1, 1], [1, 1, 1, 1], Add),
+    printer.print_arr(Add, !IO),
     arr.split(A, 2, Copa, Copa1),
     printer.print_arr(Copa, !IO),
     printer.print_arr(Copa1, !IO),
@@ -118,5 +119,8 @@ main(!IO) :-(
     io.write_char('\n', !IO),
     arr.sum(A, Sum),
     io.write_int(Sum, !IO),
-    io.nl(!IO)
+    io.nl(!IO),
+    arr.insert_kth(B, 5, 2, Ins),
+    printer.print_arr(Ins, !IO),
+    printer.print_arr(B, !IO)
     ).

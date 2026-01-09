@@ -13,6 +13,7 @@
 :- pred find(list(int)::in, int::in, bool::out) is det.
 :- pred hadamard(list(int)::in, list(int)::in, list(int)::out) is det.
 :- pred head(list(int)::in, int::out) is det.
+:- pred insert_kth(list(int)::in, int::in, int::in, list(int)::out) is det.
 :- pred kth(list(int)::in, int::in, int::out) is det.
 :- pred last(list(int)::in, int::out) is det.
 :- pred merge(list(int)::in, list(int)::in, list(int)::out) is det.
@@ -28,11 +29,10 @@
 :- pred sum(list(int)::in, int::out) is det.
 :- pred tail(list(int)::in, list(int)::out) is det.
 
-:- pred insert_kth(list(int)::in, int::in, int::in, list(int)::out) is det.
-
 :- implementation.
 
 % helpers
+:- pred insert_kth_sub(list(int)::in, int::in, int::in, int::in, list(int)::out) is det.
 :- pred kth_sub(list(int)::in, int::in, int::in, int::out) is det.
 :- pred remove_kth_sub(list(int)::in, int::in, int::in, list(int)::out) is det.
 :- pred reverse_sub(list(int)::in, list(int)::in ,list(int)::out) is det.
@@ -40,45 +40,38 @@
 :- pred split_sub(list(int)::in, int::in, int::in, list(int)::out, list(int)::out) is det.
 :- pred sum_sub(list(int)::in, int::in, int::out) is det.
 
-:- pred insert_kth_sub(list(int)::in, int::in, int::in, int::in, list(int)::out) is det.
-
 insert_kth(Arr, Elem, At, Out) :-(
-        Arr = [] -> Out = []
-        ; insert_kth_sub(Arr, Elem, At, 0, Out)
-        ).
+    insert_kth_sub(Arr, Elem, At, 0, Out)
+    ).
 
 insert_kth_sub(Arr, Elem, At, Cnt, Out) :-(
-        % FIXME: only works for the first elemement
-        At = Cnt ->
-        (
-            Arr = [H | T],
-            Out = [Elem | OT],
-            remove_kth_sub(Arr, At, Cnt + 1, OT)
-            ; Arr = [],
-              Out = [Elem | OT],
-              remove_kth_sub([], At, Cnt + 1, OT)
-        )
-        ; Arr = [], Out = []
-        ; Arr = [H | T],
-          Out = [H | OT],
-          remove_kth_sub(T, At, Cnt + 1, OT)
+    At = Cnt ->
+    (
+    Arr = [], Out = [Elem]
+    ; Arr = [_ | _],
+      Out = [Elem | OT],
+      insert_kth_sub(Arr, Elem, At, Cnt + 1, OT)
+    )
+    ; Arr = [], Out = []
+    ; Arr = [H | T],
+      Out = [H | OT],
+      insert_kth_sub(T, Elem, At, Cnt + 1, OT)
     ).
 
 remove_kth(Arr, At, Out) :-(
-        Arr = [] -> Out = []
-        ; remove_kth_sub(Arr, At, 0, Out)
+    remove_kth_sub(Arr, At, 0, Out)
     ).
 
 remove_kth_sub(Arr, At, Cnt, Out) :-(
-        At = Cnt ->
-        (
-            Arr = [_ | T], remove_kth_sub(T, At, Cnt + 1, Out)
-            ; Arr = [], remove_kth_sub([], At, Cnt + 1, Out)
-        )
-        ; Arr = [], Out = []
-        ; Arr = [H | T],
-          Out = [H | OT],
-          remove_kth_sub(T, At, Cnt + 1, OT)
+    At = Cnt ->
+    (
+        Arr = [_ | T], remove_kth_sub(T, At, Cnt + 1, Out)
+        ; Arr = [], remove_kth_sub([], At, Cnt + 1, Out)
+    )
+    ; Arr = [], Out = []
+    ; Arr = [H | T],
+      Out = [H | OT],
+      remove_kth_sub(T, At, Cnt + 1, OT)
     ).
 
 binary_search(Arr, Elem, Res) :-(
@@ -137,12 +130,10 @@ merge(Arr1, Arr2, Res) :-(
 hadamard(Arr1, Arr2, Res) :-(
     Arr1 =[],
     (
-        % TODO: debullshitfy?
-        Arr2 = [] -> Res = [] ; Res = []
+        Res = []
     )
     ; Arr1 = [H1 | T1],
     (
-        % TODO: debullshitfy? x2
         Arr2 = [], Res = []
         ; Arr2 = [H2 | T2],
           Res = [(H1 * H2) | T3],
@@ -153,12 +144,10 @@ hadamard(Arr1, Arr2, Res) :-(
 add(Arr1, Arr2, Res) :-(
     Arr1 = [],
     (
-        % TODO: debullshitfy?
-        Arr2 = [] -> Res = [] ; Res = []
+        Res = []
     )
     ; Arr1 = [H1 | T1],
     (
-        % TODO: debullshitfy? x2
         Arr2 = [], Res = []
         ; Arr2 = [H2 | T2],
           Res = [(H1 + H2) | T3],
@@ -231,7 +220,7 @@ push_front(In, Elem, Out) :-(
 sum_sub(Arr, Tmp, Sum) :-(
     Arr = [], Sum = Tmp
     ; Arr = [X | Xs], sum_sub(Xs, Tmp + X, Sum)
-   ).
+    ).
 
 sum(Arr, Sum) :-(
     Arr = [], Sum = 0
@@ -276,10 +265,10 @@ last(Arr, Last) :-(
     % TODO: should be a result
     Arr = [], Last = -2137
     ; Arr = [X | Xs],
-     (
+    (
         Xs = [] -> Last = X
         ; arr.last(Xs, Last)
-     )
+    )
     ).
 
 push_back(In, Elem, Out) :-(
